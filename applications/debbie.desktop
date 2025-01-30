@@ -1,0 +1,17 @@
+[Desktop Entry]
+Version=1.0
+Name=Deb's of Debbie
+Name[es]=Debbie de Deb's
+Comment=Install Debian (.deb) packages
+Comment[es]=Instalar paquetes Debian (.deb)
+GenericName=Debian Package Installer
+GenericName[es]=Instalador de paquetes Debian
+Exec=bash /usr/share/debbie/inyect.sh
+Icon=/usr/share/debbie/debbie.svg
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=System;PackageManager;
+Keywords=deb;debian;installer;packages;software;
+MimeType=application/vnd.debian.binary-package;
+
