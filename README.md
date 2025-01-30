@@ -4,7 +4,7 @@
   <img src="debbie.svg" alt="Debbie-de-Debs Logo" width="150"/>
 </p>
 <p align="center">
-  <img src="assets/capture.png" alt="Capture 1" width="400"/>
+  <img src="assets/capture1.png" alt="Capture 1" width="900"/>
 </p>
 
 **Debbie de Deb's** es una interfaz gráfica (GUI) para la instalación de paquetes `.deb` en sistemas basados en Debian. Es un proyecto parte del proyecto **CuerdOS GNU/Linux**. Simplifica la gestión de paquetes al proporcionar una forma intuitiva y amigable de utilizar `dpkg`. Basado en **GTK 3**, **Python**, y las herramientas de **APT** y **dpkg**.
