@@ -1,6 +1,7 @@
 import os
 import sys
 import gi
+import notify2
 
 # Detectar si estamos en Wayland o X11
 def detect_graphics_backend():
@@ -11,17 +12,21 @@ def detect_graphics_backend():
         print("Detectado X11, usando backend X11")
         os.environ['GDK_BACKEND'] = 'x11'
 
-# Inicializar GTK
+# Inicializar GTK y notify2
 detect_graphics_backend()
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, GdkPixbuf
+from gi.repository import Gtk, GdkPixbuf, GLib
 import subprocess
 import hashlib
+import gc
 
 # Verificar si Gtk se inicializa correctamente
 if not Gtk.init_check()[0]:
     print("Error al inicializar Gtk")
     exit(1)
+
+# Inicializar notify2
+notify2.init("Debbie de Deb's")
 
 class DebInstaller(Gtk.Window):
     def __init__(self, deb_file=None):
@@ -87,6 +92,16 @@ class DebInstaller(Gtk.Window):
         self.uninstall_button.set_sensitive(False)
         self.uninstall_button.connect("clicked", self.on_uninstall_clicked)
         button_box.pack_start(self.uninstall_button, True, True, 0)
+
+        self.clear_output_button = Gtk.Button(label="Limpiar Salida")
+        self.clear_output_button.set_sensitive(True)
+        self.clear_output_button.connect("clicked", self.on_clear_output_clicked)
+        button_box.pack_start(self.clear_output_button, True, True, 0)
+
+        self.refresh_memory_button = Gtk.Button(label="Refrescar Memoria")
+        self.refresh_memory_button.set_sensitive(True)
+        self.refresh_memory_button.connect("clicked", self.on_refresh_memory_clicked)
+        button_box.pack_start(self.refresh_memory_button, True, True, 0)
 
         process_box.pack_start(button_box, False, False, 0)
         paned.pack2(process_box, True, False)
@@ -170,12 +185,13 @@ class DebInstaller(Gtk.Window):
                 start_iter = self.info_buffer.get_start_iter()
                 end_iter = self.info_buffer.get_end_iter()
                 file.write(self.info_buffer.get_text(start_iter, end_iter, True))
+            self.notify("Información guardada", f"La información del paquete se ha guardado en {filename}")
         dialog.destroy()
 
     def show_about_dialog(self, widget):  # pylint: disable=unused-argument
         about_dialog = Gtk.AboutDialog()
         about_dialog.set_program_name("Debbie de Deb's")
-        about_dialog.set_version("1.0 v291224a Elena")
+        about_dialog.set_version("1.0 v120225 Elena")
         about_dialog.set_comments("Instalador de paquetes para CuerdOS GNU/Linux.")
         about_dialog.set_license_type(Gtk.License.GPL_3_0)
         current_dir = os.getcwd()
@@ -302,13 +318,16 @@ class DebInstaller(Gtk.Window):
             package_name = self.extract_package_name(file_path)
             if self.is_package_installed(package_name):
                 self.show_message_dialog("Paquete ya instalado", "El paquete ya está instalado en tu sistema.")
+                self.notify("Instalación cancelada", "El paquete ya está instalado en tu sistema.")
             else:
                 self.run_command_with_output(["pkexec", "dpkg", "-i", file_path], "Instalación completada.")
                 self.run_command_with_output(["pkexec", "apt-get", "install", "-f", "-y"], "Reparación de dependencias completada.")
                 if not self.is_package_installed(package_name):
                     self.show_message_dialog("Error en la instalación", "Se repararon dependencias pero no se instaló el paquete.")
+                    self.notify("Error en la instalación", "Se repararon dependencias pero no se instaló el paquete.")
                 else:
                     self.show_message_dialog("Instalación exitosa", "El paquete fue instalado correctamente.")
+                    self.notify("Instalación exitosa", "El paquete fue instalado correctamente.")
                 if package_name:
                     self.update_buttons(package_name)
 
@@ -316,6 +335,7 @@ class DebInstaller(Gtk.Window):
         package_name = self.extract_package_name(self.file_chooser.get_filename())
         if package_name:
             self.run_command_with_output(["pkexec", "apt", "remove", "-y", package_name], "Desinstalación completada.")
+            self.notify("Desinstalación completada", f"El paquete {package_name} ha sido desinstalado.")
             self.update_buttons(package_name)
 
     def extract_package_name(self, file_path):
@@ -351,14 +371,23 @@ class DebInstaller(Gtk.Window):
             process.wait()
             if process.returncode == 0:
                 self.append_to_output(success_message)
+                self.notify("Operación completada", success_message)
             else:
                 self.append_to_output("Error durante el procedimiento.")
+                self.notify("Error", "Error durante el procedimiento.")
+            # Desplazar automáticamente al final
+            GLib.idle_add(self.scroll_to_end)
         except Exception as e:
             self.append_to_output(f"Error: {e}")
+            self.notify("Error", f"Error: {e}")
 
     def append_to_output(self, message):
         end_iter = self.output_buffer.get_end_iter()
         self.output_buffer.insert(end_iter, message + "\n")
+
+    def scroll_to_end(self):
+        adj = self.output_view.get_vadjustment()
+        adj.set_value(adj.get_upper() - adj.get_page_size())
 
     def show_message_dialog(self, title, message):
         dialog = Gtk.MessageDialog(
@@ -371,6 +400,18 @@ class DebInstaller(Gtk.Window):
         dialog.set_title(title)
         dialog.run()
         dialog.destroy()
+
+    def notify(self, title, message):
+        n = notify2.Notification(title, message)
+        n.set_urgency(notify2.URGENCY_NORMAL)
+        n.show()
+
+    def on_clear_output_clicked(self, widget):  # pylint: disable=unused-argument
+        self.output_buffer.set_text("")
+
+    def on_refresh_memory_clicked(self, widget):  # pylint: disable=unused-argument
+        gc.collect()
+        self.notify("Memoria Refrescada", "La memoria ha sido refrescada.")
 
 if __name__ == "__main__":
     deb_file = sys.argv[1] if len(sys.argv) > 1 else None
