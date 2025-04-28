@@ -4,10 +4,10 @@
   <img src="debbie.svg" alt="Debbie-de-Debs Logo" width="150"/>
 </p>
 <p align="center">
-  <img src="assets/capture1.png" alt="Capture 1" width="900"/>
+  <img src="captures/capture_deb1.png" alt="Capture 1" width="900"/>
 </p>
 
-**Debbie de Deb's** es una interfaz gráfica (GUI) para la instalación de paquetes `.deb` en sistemas basados en Debian. Es un proyecto parte del proyecto **CuerdOS GNU/Linux**. Simplifica la gestión de paquetes al proporcionar una forma intuitiva y amigable de utilizar `dpkg`. Basado en **GTK 3**, **Python**, y las herramientas de **APT** y **dpkg**.
+**Debbie** es una interfaz gráfica (GUI) para la instalación de paquetes `.deb` en sistemas basados en Debian. Es un proyecto parte de **CuerdOS GNU/Linux**. Simplifica la gestión de paquetes al proporcionar una forma intuitiva y amigable de utilizar `dpkg`. Basado en **GTK 3**, **Python**, y las herramientas de **APT** y **dpkg**.
 
 ## Características
 
@@ -19,11 +19,15 @@
 - Soporte para múltiples idiomas.
 - Notificaciones sobre el estado de la instalación.
 
+## Distros Compatibles
+
+- **Debian 12+**, **MX Linux 21+**, **Linux Mint (Base Debian/Ubuntu)**, **KDE Neón**, **antiX**, **PeppermintOS (Base Debian/Devuan)**, **wattOS**, **Huayra**, **Trisquel (Solo paquetes libres)**
+
 ## Requisitos
 
-- **Debian 12+** o cualquier derivado compatible.
+- **systemd** o **runit**
 - **GTK 3.0**
-- **dpkg** instalado en el sistema.
+- **apt**/**dpkg** instalado en el sistema.
 - **Python 3.x**
 
 ## Instalación
