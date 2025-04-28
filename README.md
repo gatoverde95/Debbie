@@ -1,4 +1,4 @@
-# Debbie de Deb's
+# Debbie
 
 <p align="center">
   <img src="debbie.svg" alt="Debbie-de-Debs Logo" width="150"/>
@@ -31,8 +31,8 @@
 Puedes clonar el repositorio y ejecutar el script:
 
 ```bash
-git clone https://github.com/gatoverde95/Debbie-de-Debs.git
-cd Debbie-de-Debs
+git clone https://github.com/gatoverde95/Debbie.git
+cd Debbie
 python3 debbie.py
 ```
 
@@ -56,7 +56,7 @@ sudo apt-get install -f
 
 ## Contribuir
 
-Si deseas colaborar en el desarrollo de **Debbie-de-Debs**, síguenos en [GitHub](https://github.com/gatoverde95/Debbie-de-Debs) y envía tus **Pull Requests** o reporta errores en la sección de **Issues**.
+Si deseas colaborar en el desarrollo de **Debbie-de-Debs**, síguenos en [GitHub](https://github.com/gatoverde95/Debbie) y envía tus **Pull Requests** o reporta errores en la sección de **Issues**.
 
 ## Licencia
 
@@ -65,4 +65,4 @@ Este proyecto está licenciado bajo la **GPLv3**. Puedes consultar el archivo `L
 ---
 
 > **Autor:** [gatoverde95](https://github.com/gatoverde95)  
-> **Repositorio:** [Debbie-de-Debs](https://github.com/gatoverde95/Debbie-de-Debs)
+> **Repositorio:** [Debbie-de-Debs](https://github.com/gatoverde95/Debbie)
